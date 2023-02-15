@@ -1,0 +1,111 @@
+/*
+Programa para la simulación del funcinamineto de una ventana de un
+vehículo. Vamos tener dos motores uno de subida y otro para la 
+bajada, estos serán accionados por un pulsador, cuando pulsemos
+una vez subirá arriba, cuando volvamos pulsar bajará. El recorrido
+durará 7 segundos. MIentras los motores estan accionados deben 
+responder de igual forma al accionamiento del pulsador
+(responsive).
+
+En cambio en esta segunda parte (Práctica 21),vamos hacer que el 
+pulsador este forzado para que asi podamos obtener tres estados
+(ARRIBA, PARADA Y ABAJO)y que despues con cada pulsacion pase 
+por parada o 0.
+
+Por último en esta práctica 22 vamos añadir a nuestro sistema 
+dos pulsadores que van sustituir y harán la función de finales 
+de carrera, estos finales de carrera sustituyen a su vez el 
+el control del tiempo de los motores de la ventanilla, estos
+pulsadores dirigirán el movimiento de nuestra ventanila.
+
+Entrada: Pulsador(digital)
+Salidas: Relé (2x digital)
+
+Autor: Mehdi Boumhara Farhane
+Data: 9 de Febrero del 2023
+*/
+
+#define motorArriba 12
+#define motorAbajo  13
+#define pulsador     7
+#define fcArriba     8
+#define fcAbajo      9
+
+int estado = 1;    // Vamos poder tomar tres valores(0, 1 y 2).
+int contador = 0; // Este será el contador para los impulsos.
+
+void setup() {
+  pinMode(motorArriba, OUTPUT);
+  pinMode(motorAbajo,  OUTPUT); 
+  pinMode(pulsador, INPUT);
+  pinMode(fcArriba, INPUT);
+  pinMode(fcAbajo,  INPUT);
+  
+  Serial.begin(9600);
+}
+// Lectura de nuestro pulsador.
+void loop() {
+  if(digitalRead(pulsador)) {
+    estado = (estado + 1)% 4; //Los valores estarán entre 0 y 3.
+   // estado ++;
+  // if(estado > 3) { 
+ //    estado = 0;
+    // }
+    
+    // contador = 100;
+    while (digitalRead(pulsador)) {
+      delay(20);
+    }
+  }
+  if(digitalRead(fcArriba)) {   // Final de carrera hacia aarriba.
+    if(estado |= 2) {
+      estado = 1;  // Ventanilla hacia aariba.
+    }
+    delay(20);
+  }
+  
+  if(digitalRead(fcAbajo)) {
+    if(estado |= 0) {
+      estado = 3;  // Ventanilla para abajo.
+    }
+    delay(20);
+  }
+  
+ // Fin lectura del pulsador.
+  
+  Serial.print ("valor del contador: ");
+  Serial.print(contador);
+  Serial.print(" | Estado: ");
+  Serial.print(estado);
+  
+  // Accionamineto de los motores.
+  //if(contador > 0) {
+    if(estado == 0) {
+      digitalWrite(motorArriba, HIGH);
+      digitalWrite(motorAbajo,   LOW);
+      delay(70);
+      // contador --;
+    }
+    else if(estado == 2) {
+      digitalWrite(motorArriba, LOW);
+      digitalWrite(motorAbajo, HIGH);
+      delay(70);
+      // contador --;
+    }
+   
+     else {
+      digitalWrite(motorArriba, LOW);
+      digitalWrite(motorAbajo,  LOW);
+      delay(70);
+     // contador --;
+    }
+  // }
+  // else {      // Si el pulsador no esta accionado, leerá el botón 10 v/s.
+   // digitalWrite(motorArriba, LOW);
+   // digitalWrite(motorAbajo,  LOW);
+   // delay(100);
+ // }
+  // Final del accionamiento de los motores.
+  //delay(80);
+}
+
